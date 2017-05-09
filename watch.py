@@ -123,7 +123,8 @@ if __name__ == "__main__":
     while True:
         change_event.wait()
         change_event.clear()
-        if "config" in config_watcher.config and "varnishtemplate" in config_watcher.config["config"]:
+        if "config" in config_watcher.config and "varnishtemplate" in config_watcher.config["config"] \
+           and "services" in config_watcher.config:
             cfg = config_watcher.config
             serviceslist = load_services(cfg["services"]).values()
             serviceslist.sort(key=itemgetter("name"))
