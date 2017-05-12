@@ -71,14 +71,17 @@ class ConfigWatcher(K8sWatcher):
         if (json["object"] and json["object"]["kind"] == "ConfigMap"):
             obj = json["object"]
             if self.configname:
-                self.config = obj["data"][self.configname]
+                if "data" in obj and self.configname in obj["data"]:
+                    self.config = obj["data"][self.configname]
             elif self.configmap:
-                self.config = obj["data"]
+                if "data" in obj:
+                    self.config = obj["data"]
             else:
                 if obj["metadata"]["name"] not in self.config:
                     self.config[obj["metadata"]["name"]] = {}
-                self.config[obj["metadata"]["name"]] = obj["data"]
-                change_event.set()
+                if "data" in obj:
+                    self.config[obj["metadata"]["name"]] = obj["data"]
+            change_event.set()
 
 def refresh():
     global generation
